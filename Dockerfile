@@ -92,26 +92,3 @@ USER root
 RUN apt install openssh-server openssh-client -y && apt clean
 # let sshd config something, like /run/sshd, as mentioned in https://github.com/microsoft/WSL/issues/3621
 RUN service ssh start
-
-# Apple internal
-# #fuse (fuse is used for some library to mount external datasets)
-# RUN apt-get install libfuse-dev fuse -y
-
-# USER ${user}
-# # 安装trove访问数据集
-# RUN conda activate env && pip install turitrove
-# USER root
-
-# 登录验证
-# trove config
-
-# 挂载数据集
-# trove mount dataset/imagenet@1.0.0 ~/data/
-
-# 创建符号链接
-# mkdir ~/sym_data
-# mkdir ~/sym_data/imagenet
-# ln -s /home/youkaichao/data/imagenet-1.0.0/data/raw/training /home/youkaichao/sym_data/imagenet/train
-# ln -s /home/youkaichao/data/imagenet-1.0.0/data/raw/validation /home/youkaichao/sym_data/imagenet/val
-
-# trove download dataset/mnist@1.0.0 ~/data/
