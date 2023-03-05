@@ -17,7 +17,7 @@ COPY sources.list /etc/apt/
 RUN apt update
 
 # install sudo/zsh
-RUN apt install -y sudo zsh unzip
+RUN apt install -y sudo zsh unzip && apt clean
 
 # create a new user, give it sudo, change password
 RUN useradd --create-home --shell /bin/bash ${user}
@@ -72,16 +72,16 @@ COPY pip.conf /etc/
 RUN /home/${user}/miniconda/bin/conda config --show-sources
 
 # use python3.8 which is new enough but not too new to break compatibility of some old software.
-RUN /home/${user}/miniconda/bin/conda create -y -n env python=3.8
+RUN /home/${user}/miniconda/bin/conda create -y -n env python=3.8 && /home/${user}/miniconda/bin/conda clean -a -y
 
 # install pytorch, torchvision, and supporting cuda
-RUN /home/${user}/miniconda/bin/conda install -n env -y pytorch torchvision torchaudio pytorch-cuda=11.7 -c pytorch -c nvidia
+RUN /home/${user}/miniconda/bin/conda install -n env -y pytorch torchvision torchaudio pytorch-cuda=11.7 -c pytorch -c nvidia && /home/${user}/miniconda/bin/conda clean -a -y
 
 # install jupyter lab
-RUN /home/${user}/miniconda/bin/conda install -n env -y jupyterlab
+RUN /home/${user}/miniconda/bin/conda install -n env -y jupyterlab && /home/${user}/miniconda/bin/conda clean -a -y
 
 # install tensorboard
-RUN /home/${user}/miniconda/envs/env/bin/pip install tensorboard
+RUN /home/${user}/miniconda/envs/env/bin/pip install tensorboard && rm -rf /home/${user}/.cache/pip
 
 # expose the ssh port
 EXPOSE 22
