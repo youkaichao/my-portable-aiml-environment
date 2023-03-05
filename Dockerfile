@@ -1,0 +1,110 @@
+# base image, I choose a ubuntu 18.04 image which is new enough but not too new to break compatibility of some old software.
+# you can switch to another image if you like, or switch to an internal docker-hub image if you do not have internet access.
+FROM ubuntu:18.04
+
+# use bash for the support of `source` command, and `-l` option to automatic source bash profile
+SHELL [ "/bin/bash", "-l", "-c"]
+
+# your username and password, they are self-explained
+ARG user=youkaichao
+ARG passwd=whateveryoulike
+
+# adjust apt source
+# I obtain the sources.list from tuna mirrors: https://mirrors.tuna.tsinghua.edu.cn/help/ubuntu/
+COPY sources.list /etc/apt/
+
+# update package info
+RUN apt update
+
+# install sudo/zsh
+RUN apt install -y sudo zsh unzip
+
+# create a new user, give it sudo, change password
+RUN useradd --create-home --shell /bin/bash ${user}
+RUN usermod -aG sudo ${user}
+RUN echo "${user}:${passwd}" | chpasswd
+
+# copy miniconda install package
+COPY Miniconda3.sh /home/${user}/
+RUN chmod +x /home/${user}/Miniconda3.sh
+
+# switch to that user
+USER ${user}
+WORKDIR /home/${user}
+
+RUN /home/${user}/Miniconda3.sh -b -p /home/${user}/miniconda
+
+# prepare ssh
+RUN mkdir /home/${user}/.ssh
+
+# trust my computer
+COPY id_rsa.pub /home/${user}/.ssh/
+USER root
+RUN chown ${user} /home/${user}/.ssh/id_rsa.pub
+USER ${user}
+RUN mv /home/${user}/.ssh/id_rsa.pub /home/${user}/.ssh/authorized_keys
+RUN chmod 644 /home/${user}/.ssh/authorized_keys
+
+# setup zsh
+COPY ohmyzsh-master.zip /home/${user}/
+RUN unzip /home/${user}/ohmyzsh-master.zip -d /home/${user}/ohmyzsh-master
+RUN mv /home/${user}/ohmyzsh-master/ohmyzsh-master /home/${user}/.oh-my-zsh/
+RUN echo "export ZSH=/home/${user}/.oh-my-zsh/" >> /home/${user}/.bashrc
+RUN echo "/bin/zsh" >> /home/${user}/.bashrc
+RUN cp /home/${user}/.oh-my-zsh/templates/zshrc.zsh-template /home/${user}/.zshrc
+
+# conda init
+
+RUN /home/${user}/miniconda/bin/conda init zsh
+RUN /home/${user}/miniconda/bin/conda init bash
+
+# copy config of conda and pip
+
+# this condarc is copied from https://mirrors.tuna.tsinghua.edu.cn/help/anaconda/
+USER root
+COPY .condarc /home/${user}/
+RUN chown ${user} /home/${user}/.condarc
+USER ${user}
+
+COPY pip.conf /etc/
+
+# show some diagnosis info
+RUN /home/${user}/miniconda/bin/conda config --show-sources
+
+# use python3.8 which is new enough but not too new to break compatibility of some old software.
+RUN /home/${user}/miniconda/bin/conda create -y -n env python=3.8
+
+# install pytorch, torchvision, and supporting cuda
+RUN /home/${user}/miniconda/bin/conda install -n env -y pytorch torchvision torchaudio pytorch-cuda=11.7 -c pytorch -c nvidia
+
+# install jupyter lab
+RUN /home/${user}/miniconda/bin/conda install -n env -y jupyterlab
+
+# install tensorboard
+RUN /home/${user}/miniconda/envs/env/bin/pip install tensorboard
+
+# expose the ssh port
+EXPOSE 22
+
+# Apple internal
+# #fuse (fuse is used for some library to mount external datasets)
+# RUN apt-get install libfuse-dev fuse -y
+
+# USER ${user}
+# # 安装trove访问数据集
+# RUN conda activate env && pip install turitrove
+# USER root
+
+# 登录验证
+# trove config
+
+# 挂载数据集
+# trove mount dataset/imagenet@1.0.0 ~/data/
+
+# 创建符号链接
+# mkdir ~/sym_data
+# mkdir ~/sym_data/imagenet
+# ln -s /home/youkaichao/data/imagenet-1.0.0/data/raw/training /home/youkaichao/sym_data/imagenet/train
+# ln -s /home/youkaichao/data/imagenet-1.0.0/data/raw/validation /home/youkaichao/sym_data/imagenet/val
+
+# trove download dataset/mnist@1.0.0 ~/data/
