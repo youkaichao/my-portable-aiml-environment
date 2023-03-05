@@ -90,6 +90,8 @@ EXPOSE 22
 USER root
 
 RUN apt install openssh-server openssh-client -y && apt clean
+# let sshd config something, like /run/sshd, as mentioned in https://github.com/microsoft/WSL/issues/3621
+RUN service ssh start
 
 # Apple internal
 # #fuse (fuse is used for some library to mount external datasets)
