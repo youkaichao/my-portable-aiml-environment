@@ -86,6 +86,11 @@ RUN /home/${user}/miniconda/envs/env/bin/pip install tensorboard && rm -rf /home
 # expose the ssh port
 EXPOSE 22
 
+# finally, switch back to root, as is done in common scenarios
+USER root
+
+RUN apt install openssh-server openssh-client -y && apt clean
+
 # Apple internal
 # #fuse (fuse is used for some library to mount external datasets)
 # RUN apt-get install libfuse-dev fuse -y
