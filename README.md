@@ -1,6 +1,14 @@
 # my-portable-aiml-environment
 A dockerfile to build my portable environment for AI/ML development, with some daily used packags!
 
+The docker image contains:
+
+- GPU support
+- jupyter lab/notebook interactive programming based on web UI
+- tensorboard visualization
+- full-stack ssh capacity
+- latest pytorch environment with miniconda support
+
 # Clone this repo:
 
 ```bash
