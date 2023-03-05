@@ -1,0 +1,13 @@
+services:
+  test:
+    image: youkaichao/pytorch113_cu117_ubuntu1804:slim
+    command: /usr/sbin/sshd -D -e & && sleep infinity
+    ports:
+      - "3232:22"
+    deploy:
+      resources:
+        reservations:
+          devices:
+          - driver: nvidia
+            device_ids: ['0', '3']
+            capabilities: [gpu]
