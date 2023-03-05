@@ -64,6 +64,9 @@ If you are working inside a company, and the computer has no access to the inter
 
 As for the Miniconda/Zsh files, just download them with your laptop and upload the machine to build the docker image (or just build the docker image with your laptop).
 
+# Note
+
+If you don't want to build the image yourself, you can also use the image I have built: `docker pull youkaichao/pytorch113_cu117_ubuntu1804:slim`. Since it contains my public key, if you don't want me to be able to log in to your server, remember to delete the public key in it: /home/youkaichao/.ssh/authorized_keys.
 
 # Done!
 
