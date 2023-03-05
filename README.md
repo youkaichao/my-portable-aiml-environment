@@ -24,7 +24,11 @@ wget https://github.com/ohmyzsh/ohmyzsh/archive/refs/heads/master.zip -O ohmyzsh
 
 # Run docker build
 
-`docker build --progress=plain --tag youkaichao/pytorch113_cu117_ubuntu1804:slim .`
+```bash
+export user=name
+export passwd=yourpass
+docker build --build-arg user=$user --build-arg passwd=$passwd --progress=plain --tag $user/pytorch113_cu117_ubuntu1804:slim .
+```
 
 # Try that image
 
