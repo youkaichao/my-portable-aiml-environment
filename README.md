@@ -1,6 +1,13 @@
 # my-portable-aiml-environment
 A dockerfile to build my portable environment for AI/ML development, with some daily used packags!
 
+# Clone this repo:
+
+```bash
+git clone git@github.com:youkaichao/my-portable-aiml-environment.git
+cd my-portable-aiml-environment
+```
+
 # Install Docker
 Command from https://mirrors.tuna.tsinghua.edu.cn/help/docker-ce/ :
 ```bash
@@ -40,7 +47,7 @@ Run the image in a container:
 
 In a seperated shell, try:
 
-`ssh youkaichao@127.0.0.1 -P 3232`
+`ssh $user@127.0.0.1 -P 3232`
 
 And you should log in with a ZSH shell! Try `nvidia-smi` to see the GPU, and `conda activate env && python -c "import torch; a=torch.randn(500, 500).cuda(); b=a.max(); print(b)"` to see that GPU is enabled!
 
@@ -48,7 +55,16 @@ And you should log in with a ZSH shell! Try `nvidia-smi` to see the GPU, and `co
 
 ```bash
 docker login docker.io
-docker push youkaichao/pytorch113_cu117_ubuntu1804:slim
+docker push $user/pytorch113_cu117_ubuntu1804:slim
 ```
 
+# Note for usage in internal environment (e.g. inside a company without network acess)
+
+If you are working inside a company, and the computer has no access to the internet, you can replace files in `sources.list`, `pip.conf`, `.condarc` with the apt-source/pip index/conda channel in your company.
+
+As for the Miniconda/Zsh files, just download them with your laptop and upload the machine to build the docker image (or just build the docker image with your laptop).
+
+
 # Done!
+
+Happy Coding, Happy Life! No more environment setup for every machine!
