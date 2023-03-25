@@ -1,5 +1,5 @@
 # my-portable-aiml-environment
-A dockerfile to build my portable environment for AI/ML development, with some daily used packags!
+A dockerfile to build my portable environment for AI/ML development, with some daily used packages!
 
 The docker image contains:
 
@@ -8,15 +8,18 @@ The docker image contains:
 - tensorboard visualization
 - full-stack ssh capacity
 - latest pytorch environment with miniconda support
+- OpenMMLab MMCV/MMDetection/MMClassification support
+- MLNX OFED support (for distributed training with RDMA)
 
-# Clone this repo:
+
+# Clone this repo (on a laptop):
 
 ```bash
 git clone git@github.com:youkaichao/my-portable-aiml-environment.git
 cd my-portable-aiml-environment
 ```
 
-# Install Docker
+# Install Docker (on a linux server)
 Command from https://mirrors.tuna.tsinghua.edu.cn/help/docker-ce/ :
 ```bash
 export DOWNLOAD_URL="https://mirrors.tuna.tsinghua.edu.cn/docker-ce"
@@ -26,7 +29,7 @@ Make sure you are root user.
 
 Check `service docker status` to see if docker is running. If not, run `service docker start`.
 
-# To download some packages:
+# To download some packages (on a laptop):
 
 Mainly download miniconda, oh-my-zsh, and copy public key.
 
@@ -35,6 +38,9 @@ mkdir docker_build && cd docker_build
 wget https://mirrors.bfsu.edu.cn/anaconda/miniconda/Miniconda3-py38_23.1.0-1-Linux-x86_64.sh -O Miniconda3.sh
 cp ~/.ssh/id_rsa.pub id_rsa.pub
 wget https://github.com/ohmyzsh/ohmyzsh/archive/refs/heads/master.zip -O ohmyzsh-master.zip
+wget https://download.openmmlab.com/mmcv/dist/cu117/torch1.13.0/mmcv_full-1.7.0-cp38-cp38-manylinux1_x86_64.whl
+# download MLNX OFED installer from https://network.nvidia.com/products/infiniband-drivers/linux/mlnx_ofed/
+scp -r my-portable-aiml-environment your@machine:/path
 ```
 
 # Run docker build
