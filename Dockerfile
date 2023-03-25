@@ -11,8 +11,10 @@ ARG user=youkaichao
 ARG passwd=whateveryoulike
 ARG HOST_ENDPOINT=http://host.docker.internal:8080
 
+COPY sources.list /etc/apt/
+
 RUN echo "adjust apt source, update" && \
-    wget ${HOST_ENDPOINT}/sources.list -O /etc/apt/sources.list && apt update && \
+    apt update && apt install -y wget perl && \
     echo "install sudo/zsh" && \
     apt install -y sudo zsh unzip && \
     echo "install ssh, let sshd config something, like /run/sshd, as mentioned in https://github.com/microsoft/WSL/issues/3621" && \
