@@ -1,6 +1,6 @@
 # base image, I choose a ubuntu 18.04 image which is new enough but not too new to break compatibility of some old software.
 # you can switch to another image if you like, or switch to an internal docker-hub image if you do not have internet access.
-FROM ubuntu:18.04
+FROM ubuntu:20.04
 
 # use bash for the support of `source` command, and `-l` option to automatic source bash profile
 SHELL [ "/bin/bash", "-l", "-c"]
@@ -17,20 +17,22 @@ RUN echo "adjust apt source, update" && \
     apt update && apt install -y wget perl && \
     echo "install sudo/zsh" && \
     apt install -y sudo zsh unzip && \
+    echo "create a new user, give it sudo, change password" && \
+    useradd -u 1000 --create-home --shell /bin/bash ${user} && usermod -aG sudo ${user} && echo "${user}:${passwd}" | chpasswd && mkdir -p /etc/sudoers.d && touch /etc/sudoers.d/${user} && chmod 0440 /etc/sudoers.d/${user} && echo ${user} ' ALL=(ALL) NOPASSWD:ALL' | tee /etc/sudoers.d/${user} && \
+    echo "configuring timezone" && \
+    apt install debconf-utils -y && export DEBIAN_FRONTEND=noninteractive; export DEBCONF_NONINTERACTIVE_SEEN=true; echo "tzdata tzdata/Areas select Asia" | debconf-set-selections && echo "tzdata tzdata/Zones/Asia select Shanghai" | debconf-set-selections && \
     echo "install ssh, let sshd config something, like /run/sshd, as mentioned in https://github.com/microsoft/WSL/issues/3621" && \
     apt install openssh-server openssh-client -y && service ssh start && \
     echo "MLNX OFED support (for distributed training with RDMA)" && \
-    wget ${HOST_ENDPOINT}/MLNX_OFED_LINUX-5.4-3.6.8.1-ubuntu18.04-x86_64.tgz -O /MLNX_OFED_LINUX-5.4-3.6.8.1-ubuntu18.04-x86_64.tgz && \
-    tar xvfz /MLNX_OFED_LINUX-5.4-3.6.8.1-ubuntu18.04-x86_64.tgz && \
-    /MLNX_OFED_LINUX-5.4-3.6.8.1-ubuntu18.04-x86_64/mlnxofedinstall --without-fw-update --user-space-only --all --force --without-neohost-backend --without-neohost-sdk --without-openmpi --with-nvmf --with-nfsrdma && \
-    rm -rf /MLNX_OFED_LINUX-5.4-3.6.8.1-ubuntu18.04-x86_64 && \
-    rm /MLNX_OFED_LINUX-5.4-3.6.8.1-ubuntu18.04-x86_64.tgz && \
+    wget ${HOST_ENDPOINT}/MLNX_OFED_LINUX-5.4-3.6.8.1-ubuntu20.04-x86_64.tgz -O /MLNX_OFED_LINUX-5.4-3.6.8.1-ubuntu20.04-x86_64.tgz && \
+    tar xvfz /MLNX_OFED_LINUX-5.4-3.6.8.1-ubuntu20.04-x86_64.tgz && \
+    /MLNX_OFED_LINUX-5.4-3.6.8.1-ubuntu20.04-x86_64/mlnxofedinstall --without-fw-update --user-space-only --all --force --without-neohost-backend --without-neohost-sdk --without-openmpi --with-nvmf --with-nfsrdma && \
+    rm -rf /MLNX_OFED_LINUX-5.4-3.6.8.1-ubuntu20.04-x86_64 && \
+    rm /MLNX_OFED_LINUX-5.4-3.6.8.1-ubuntu20.04-x86_64.tgz && \
     echo "clean apt" && \
     apt clean && \
     echo "add pip config" && \
-    wget ${HOST_ENDPOINT}/pip.conf -O /etc/pip.conf && \
-    echo "create a new user, give it sudo, change password" && \
-    useradd --create-home --shell /bin/bash ${user} && usermod -aG sudo ${user} && echo "${user}:${passwd}" | chpasswd
+    wget ${HOST_ENDPOINT}/pip.conf -O /etc/pip.conf
 
 # expose the ssh port
 EXPOSE 22

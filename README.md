@@ -1,5 +1,5 @@
 # my-portable-aiml-environment
-A dockerfile to build my portable environment for AI/ML development, with some daily used packages!
+A Dockerfile to build my portable environment for AI/ML development, with some daily used packages!
 
 The docker image contains:
 
@@ -42,18 +42,18 @@ Check `service docker status` to see if docker is running. If not, run `service 
 In a separate terminal, serve installer files by `python3 -m http.server 8080`.
 
 ```bash
-export user=youkaichao
+export user=user
 export passwd=whatispass
 export HOST_IP=$(hostname -I | awk '{print $1}')
 export HOST_PORT=8080
-docker build --build-arg user=$user --build-arg passwd=$passwd --build-arg HOST_ENDPOINT=$HOST_IP:$HOST_PORT --progress=plain --tag $user/pytorch113_cu117_ubuntu1804:openmmlab-ofed .
+docker build --build-arg user=$user --build-arg passwd=$passwd --build-arg HOST_ENDPOINT=$HOST_IP:$HOST_PORT --progress=plain --tag youkaichao/pytorch113_cu117_ubuntu2004:openmmlab-ofed .
 ```
 
 # Push the image to cloud in that Linux Machine
 
 ```bash
 docker login
-docker push $user/pytorch113_cu117_ubuntu1804:openmmlab-ofed
+docker push $user/pytorch113_cu117_ubuntu2004:openmmlab-ofed
 ```
 
 # Try that image
@@ -68,7 +68,7 @@ In a seperated shell, try:
 
 `ssh $user@127.0.0.1 -P 3232`
 
-And you should log in with a ZSH shell! Try `nvidia-smi` to see the GPU, and `conda activate env && python -c "import torch; a=torch.randn(500, 500).cuda(); b=a.max(); print(b)"` to see that GPU is enabled!
+And you should log in with a ZSH shell! Try `nvidia-smi` to see the GPU, and `conda activate env && python -c "from mmdet.apis import init_random_seed, set_random_seed, train_detector; import torch; a=torch.randn(500, 500).cuda(); b=a.max(); print(b)"` to see that GPU is enabled!
 
 Sometimes the password is not set correctly. You can also use `docker exec -it container_id /bin/bash` to attach to that image.
 
