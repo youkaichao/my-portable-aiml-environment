@@ -70,6 +70,8 @@ In a seperated shell, try:
 
 And you should log in with a ZSH shell! Try `nvidia-smi` to see the GPU, and `conda activate env && python -c "import torch; a=torch.randn(500, 500).cuda(); b=a.max(); print(b)"` to see that GPU is enabled!
 
+Sometimes the password is not set correctly. You can also use `docker exec -it container_id /bin/bash` to attach to that image.
+
 # RDMA support
 
 Note: To test RDMA support, use `show_gids` to see RDMA devices. If the output is not empty, then RDMA support is on!
