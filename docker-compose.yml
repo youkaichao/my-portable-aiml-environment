@@ -1,6 +1,6 @@
 services:
   test:
-    image: youkaichao/pytorch113_cu117_ubuntu2004:openmmlab-ofed
+    image: youkaichao/pytorch113_cu117_ubuntu2004:openmmlab-ofed-deepspeed
     command: /usr/sbin/sshd -D -e & && sleep infinity
     ports:
       - "3232:22"

@@ -53,7 +53,7 @@ docker build --build-arg user=$user --build-arg passwd=$passwd --build-arg HOST_
 
 ```bash
 docker login
-docker push $user/pytorch113_cu117_ubuntu2004:openmmlab-ofed-deepspeed
+docker push youkaichao/pytorch113_cu117_ubuntu2004:openmmlab-ofed-deepspeed
 ```
 
 # Try that image
