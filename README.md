@@ -21,6 +21,7 @@ cp ~/.ssh/id_rsa.pub id_rsa.pub
 wget https://github.com/ohmyzsh/ohmyzsh/archive/refs/heads/master.zip -O ohmyzsh-master.zip
 wget https://download.openmmlab.com/mmcv/dist/cu117/torch1.13.0/mmcv_full-1.7.0-cp38-cp38-manylinux1_x86_64.whl
 # download MLNX OFED installer from https://network.nvidia.com/products/infiniband-drivers/linux/mlnx_ofed/
+# download cuda toolkit dev from https://developer.nvidia.com/cuda-11-7-0-download-archive (installer type: runfile, local)
 cd ..
 scp -r my-portable-aiml-environment your@machine:/path
 ```

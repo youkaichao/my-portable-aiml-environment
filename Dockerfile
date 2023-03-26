@@ -73,9 +73,16 @@ RUN echo "install miniconda" && \
     echo "clean pip" && \
     rm -rf /home/${user}/.cache/pip
 
-RUN echo "install deepspeed" && \
-    /home/${user}/miniconda/bin/conda install -n env -c conda-forge -y cudatoolkit-dev=11.7 && \
-    export CUDA_HOME=/home/${user}/miniconda/envs/env/ && export DS_BUILD_OPS=0 && \
+RUN echo "install cuda toolkit dev" && \
+    wget ${HOST_ENDPOINT}/cuda_11.7.0_515.43.04_linux.run -O /home/${user}/cuda_11.7.0_515.43.04_linux.run && \
+    chmod +x /home/${user}/cuda_11.7.0_515.43.04_linux.run && \
+    echo "start to install" && mkdir /home/${user}/tmp/ && \
+    sudo /bin/sh /home/${user}/cuda_11.7.0_515.43.04_linux.run --silent --toolkit --installpath=/home/${user}/cuda/ --tmpdir=/home/${user}/tmp/ && \
+    sudo rm -rf /home/${user}/tmp/ && rm /home/${user}/cuda_11.7.0_515.43.04_linux.run && \
+    echo "checking cuda home:" && ls -alth /home/${user}/cuda/ && \
+    echo "checking cuda bin" && ls -alth /home/${user}/cuda/bin/ && \
+    echo "install deepspeed" && \
+    export CUDA_HOME=/home/${user}/cuda/ && export DS_BUILD_OPS=0 && \
     /home/${user}/miniconda/envs/env/bin/pip install py-cpuinfo && \
     /home/${user}/miniconda/envs/env/bin/pip install deepspeed && \
     /home/${user}/miniconda/envs/env/bin/pip install accelerate click datasets "transformers[torch]" watchdog pytest-cov pytest && \
