@@ -46,14 +46,14 @@ export user=user
 export passwd=whatispass
 export HOST_IP=$(hostname -I | awk '{print $1}')
 export HOST_PORT=8080
-docker build --build-arg user=$user --build-arg passwd=$passwd --build-arg HOST_ENDPOINT=$HOST_IP:$HOST_PORT --progress=plain --tag youkaichao/pytorch113_cu117_ubuntu2004:openmmlab-ofed .
+docker build --build-arg user=$user --build-arg passwd=$passwd --build-arg HOST_ENDPOINT=$HOST_IP:$HOST_PORT --progress=plain --tag youkaichao/pytorch113_cu117_ubuntu2004:openmmlab-ofed-deepspeed .
 ```
 
 # Push the image to cloud in that Linux Machine
 
 ```bash
 docker login
-docker push $user/pytorch113_cu117_ubuntu2004:openmmlab-ofed
+docker push $user/pytorch113_cu117_ubuntu2004:openmmlab-ofed-deepspeed
 ```
 
 # Try that image
@@ -76,6 +76,15 @@ Sometimes the password is not set correctly. You can also use `docker exec -it c
 
 Note: To test RDMA support, use `show_gids` to see RDMA devices. If the output is not empty, then RDMA support is on!
 
+# DeepSpeed support
+
+To use DeepSpeed, you may set the following environment variables:
+```
+export CUDA_HOME=/home/user/miniconda/envs/env/
+export PATH=$PATH:/home/user/miniconda/envs/env/bin
+deepspeed --help
+```
+
 # Note for usage in internal environment (e.g. inside a company without network acess)
 
 If you are working inside a company, and the computer has no access to the internet, you can replace files in `sources.list`, `pip.conf`, `.condarc` with the apt-source/pip index/conda channel in your company.
@@ -84,7 +93,7 @@ As for the Miniconda/Zsh files, just download them with your laptop and upload t
 
 # Note
 
-If you don't want to build the image yourself, you can also use the image I have built: `youkaichao/pytorch113_cu117_ubuntu1804:openmmlab-ofed`. Since it contains my public key, if you don't want me to be able to log in to your server, remember to delete the public key in it: /home/youkaichao/.ssh/authorized_keys.
+If you don't want to build the image yourself, you can also use the image I have built: `youkaichao/pytorch113_cu117_ubuntu1804:openmmlab-ofed-deepspeed`. Since it contains my public key, if you don't want me to be able to log in to your server, remember to delete the public key in it: /home/youkaichao/.ssh/authorized_keys.
 
 For a typical image to train models, oh-my-zsh and tensorboard/jupyterlab are not necessary. Feel free to change the Dockerfile to fit your need!
 

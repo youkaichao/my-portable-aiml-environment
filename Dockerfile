@@ -73,6 +73,17 @@ RUN echo "install miniconda" && \
     echo "clean pip" && \
     rm -rf /home/${user}/.cache/pip
 
+RUN echo "install deepspeed" && \
+    /home/${user}/miniconda/bin/conda install -n env -c conda-forge -y cudatoolkit-dev=11.7 && \
+    export CUDA_HOME=/home/${user}/miniconda/envs/env/ && export DS_BUILD_OPS=0 && \
+    /home/${user}/miniconda/envs/env/bin/pip install py-cpuinfo && \
+    /home/${user}/miniconda/envs/env/bin/pip install deepspeed && \
+    /home/${user}/miniconda/envs/env/bin/pip install accelerate click datasets "transformers[torch]" watchdog pytest-cov pytest && \
+    echo "clean conda" && \
+    /home/${user}/miniconda/bin/conda clean -a -y && \
+    echo "clean pip" && \
+    rm -rf /home/${user}/.cache/pip
+
 # finally, switch back to root, as is done in common scenarios
 USER root
 
