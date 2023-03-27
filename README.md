@@ -10,6 +10,7 @@ The docker image contains:
 - latest pytorch environment (1.13) with miniconda support
 - OpenMMLab MMCV(1.7)/MMDetection/MMClassification support
 - MLNX OFED support (version 5.4 for distributed training with RDMA)
+- Deepspeed with Huggingface Transformers/Datasets/Accelerate
 
 # Clone this repo (in your laptop) and send necessary files to the machine to build docker:
 
