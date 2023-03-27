@@ -67,6 +67,7 @@ RUN echo "install miniconda" && \
     wget ${HOST_ENDPOINT}/mmcv_full-1.7.0-cp38-cp38-manylinux1_x86_64.whl -O /home/${user}/mmcv_full-1.7.0-cp38-cp38-manylinux1_x86_64.whl && \
     echo "instal openmmlab series" && \
     /home/${user}/miniconda/envs/env/bin/pip install /home/${user}/mmcv_full-1.7.0-cp38-cp38-manylinux1_x86_64.whl && \
+    rm /home/${user}/mmcv_full-1.7.0-cp38-cp38-manylinux1_x86_64.whl && \
     /home/${user}/miniconda/envs/env/bin/pip install mmdet mmcls && \
     echo "uninstall opencv and install opencv headless for servers" && \
     /home/${user}/miniconda/envs/env/bin/pip uninstall -y opencv-python && /home/${user}/miniconda/envs/env/bin/pip install opencv-python-headless && \
