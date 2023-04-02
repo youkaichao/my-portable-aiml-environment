@@ -95,7 +95,7 @@ As for the Miniconda/Zsh files, just download them with your laptop and upload t
 
 # Note
 
-If you don't want to build the image yourself, you can also use the image I have built: `youkaichao/pytorch113_cu117_ubuntu1804:openmmlab-ofed-deepspeed`. Since it contains my public key, if you don't want me to be able to log in to your server, remember to delete the public key in it: /home/youkaichao/.ssh/authorized_keys.
+If you don't want to build the image yourself, you can also use the image I have built: `youkaichao/pytorch113_cu117_ubuntu2004:openmmlab-ofed-deepspeed`. Since it contains my public key, if you don't want me to be able to log in to your server, remember to delete the public key in it: /home/youkaichao/.ssh/authorized_keys.
 
 For a typical image to train models, oh-my-zsh and tensorboard/jupyterlab are not necessary. Feel free to change the Dockerfile to fit your need!
 
