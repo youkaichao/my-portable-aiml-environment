@@ -78,6 +78,71 @@ Sometimes the password is not set correctly. You can also use `docker exec -it c
 
 Note: To test RDMA support, use `show_gids` to see RDMA devices. If the output is not empty, then RDMA support is on!
 
+If you want to test the bandwidth of RDMA:
+
+1. Find a machine to be master, and use `hostname -I | awk '{print $1}'` to find its IP.
+2. Execute the following command in each machine, with the node-rank changed to an index starting from 0. (The master machine should have node-rank of 0.)
+
+```
+export NCCL_IB_GID_INDEX=`show_gids | grep -i v2 | tail -1 | awk '{print $3}'`
+export N_NODES=2
+export nproc_per_node=8
+export MASTER_ADDR=xxx
+export NODE_RANK=0
+export NCCL_DEBUG=INFO
+export UCX_LOG_LEVEL=debug
+export MASTER_PORT=12345
+
+echo node rank $NODE_RANK, master at $MASTER_ADDR:$MASTER_PORT
+
+/home/youkaichao/miniconda/envs/env/bin/torchrun --nnodes=$N_NODES --nproc_per_node=$nproc_per_node --node_rank=$NODE_RANK --master_addr=$MASTER_ADDR --master_port=$MASTER_PORT test_rdma.py
+```
+
+You should see detailed log from NCCL, and an estimated bandwith in the unit of Gbps.
+
+An example of output (for only the process with local_rank of 0) is shown below:
+
+```
+lsp-ws1:7650:7650 [0] NCCL INFO Bootstrap : Using eth0:10.168.3.28<0>
+lsp-ws1:7650:7650 [0] NCCL INFO NET/Plugin : No plugin found (libnccl-net.so), using internal implementation
+lsp-ws1:7650:7650 [0] NCCL INFO cudaDriverVersion 11040
+lsp-ws1:7650:7708 [0] NCCL INFO NET/IB : No device found.
+lsp-ws1:7650:7708 [0] NCCL INFO NET/Socket : Using [0]eth0:10.168.3.28<0> [1]eth1:10.168.3.28<0>
+lsp-ws1:7650:7708 [0] NCCL INFO Using network Socket
+lsp-ws1:7650:7708 [0] NCCL INFO Setting affinity for GPU 0 to ffffffff,00000000,ffffffff
+lsp-ws1:7650:7708 [0] NCCL INFO Channel 00/02 :    0   7   6   5   4   3   2   1   8  15  14  13  12  11  10   9
+lsp-ws1:7650:7708 [0] NCCL INFO Channel 01/02 :    0   7   6   5   4   3   2   1   8  15  14  13  12  11  10   9
+lsp-ws1:7650:7708 [0] NCCL INFO Trees [0] 1/8/-1->0->-1 [1] 1/-1/-1->0->8
+lsp-ws1:7650:7708 [0] NCCL INFO Channel 00/0 : 9[51000] -> 0[4b000] [receive] via NET/Socket/0
+lsp-ws1:7650:7708 [0] NCCL INFO Channel 01/0 : 9[51000] -> 0[4b000] [receive] via NET/Socket/0
+lsp-ws1:7650:7708 [0] NCCL INFO Channel 00/0 : 0[4b000] -> 7[cf000] via P2P/IPC/read
+lsp-ws1:7650:7708 [0] NCCL INFO Channel 01/0 : 0[4b000] -> 7[cf000] via P2P/IPC/read
+lsp-ws1:7650:7708 [0] NCCL INFO Connected all rings
+lsp-ws1:7650:7708 [0] NCCL INFO Channel 00/0 : 0[4b000] -> 1[51000] via P2P/IPC/read
+lsp-ws1:7650:7708 [0] NCCL INFO Channel 01/0 : 0[4b000] -> 1[51000] via P2P/IPC/read
+lsp-ws1:7650:7708 [0] NCCL INFO Channel 00/0 : 8[4b000] -> 0[4b000] [receive] via NET/Socket/0
+lsp-ws1:7650:7708 [0] NCCL INFO Channel 01/0 : 8[4b000] -> 0[4b000] [receive] via NET/Socket/0
+lsp-ws1:7650:7708 [0] NCCL INFO Channel 00/0 : 0[4b000] -> 8[4b000] [send] via NET/Socket/0
+lsp-ws1:7650:7708 [0] NCCL INFO Channel 01/0 : 0[4b000] -> 8[4b000] [send] via NET/Socket/0
+lsp-ws1:7650:7708 [0] NCCL INFO Connected all trees
+lsp-ws1:7650:7708 [0] NCCL INFO threadThresholds 8/8/64 | 128/8/64 | 512 | 512
+lsp-ws1:7650:7708 [0] NCCL INFO 2 coll channels, 2 p2p channels, 2 p2p channels per peer
+lsp-ws1:7650:7708 [0] NCCL INFO comm 0x37c6a330 rank 0 nranks 16 cudaDev 0 busId 4b000 - Init COMPLETE
+time spent for each trial: 1.650430393218994
+param all-reduce speed: 2.4236102391439927 GB/s
+communication bandwidth (estimated): 38.77776382630388 Gb/s
+answer: 7864320.0
+lsp-ws1:7650:7729 [0] NCCL INFO [Service thread] Connection closed by localRank 0
+lsp-ws1:7655:7655 [0] NCCL INFO comm 0x4d2d12d0 rank 5 nranks 16 cudaDev 5 busId 92000 - Abort COMPLETE
+lsp-ws1:7650:7650 [0] NCCL INFO comm 0x37c6a330 rank 0 nranks 16 cudaDev 0 busId 4b000 - Abort COMPLETE
+lsp-ws1:7653:7653 [0] NCCL INFO comm 0x4b0155b0 rank 3 nranks 16 cudaDev 3 busId 6f000 - Abort COMPLETE
+lsp-ws1:7654:7654 [0] NCCL INFO comm 0x4a488b20 rank 4 nranks 16 cudaDev 4 busId 8d000 - Abort COMPLETE
+lsp-ws1:7652:7652 [0] NCCL INFO comm 0x4caa9e20 rank 2 nranks 16 cudaDev 2 busId 6a000 - Abort COMPLETE
+lsp-ws1:7651:7651 [0] NCCL INFO comm 0x4ab5f330 rank 1 nranks 16 cudaDev 1 busId 51000 - Abort COMPLETE
+lsp-ws1:7657:7657 [0] NCCL INFO comm 0x4bbd4880 rank 7 nranks 16 cudaDev 7 busId cf000 - Abort COMPLETE
+lsp-ws1:7656:7656 [0] NCCL INFO comm 0x4afb1b30 rank 6 nranks 16 cudaDev 6 busId c9000 - Abort COMPLETE
+```
+
 # DeepSpeed support
 
 To use DeepSpeed, you may set the following environment variables:
