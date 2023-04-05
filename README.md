@@ -44,7 +44,7 @@ Check `service docker status` to see if docker is running. If not, run `service 
 In a separate terminal, serve installer files by `python3 -m http.server 8080`.
 
 ```bash
-export user=user
+export user=youkaichao
 export passwd=whatispass
 export HOST_IP=$(hostname -I | awk '{print $1}')
 export HOST_PORT=8080
@@ -66,7 +66,7 @@ Run the image in a container:
 
 `docker compose up`
 
-In a seperated shell, try:
+In a separated shell, try:
 
 `ssh $user@127.0.0.1 -P 3232`
 
