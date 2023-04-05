@@ -82,8 +82,8 @@ Note: To test RDMA support, use `show_gids` to see RDMA devices. If the output i
 
 To use DeepSpeed, you may set the following environment variables:
 ```
-export CUDA_HOME=/home/user/miniconda/envs/env/
-export PATH=$PATH:/home/user/miniconda/envs/env/bin
+export CUDA_HOME=/home/youkaichao/cuda/
+export PATH=$PATH:/home/youkaichao/cuda/bin
 deepspeed --help
 ```
 
