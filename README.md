@@ -60,7 +60,7 @@ docker push youkaichao/pytorch113_cu117_ubuntu2004:openmmlab-ofed-deepspeed
 
 # Try that image
 
-Install the container runtime for GPU, follow the guide at https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html .
+Install the container runtime for GPU, follow the guide at https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html#docker .
 
 Run the image in a container:
 
