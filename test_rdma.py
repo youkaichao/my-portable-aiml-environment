@@ -8,20 +8,27 @@ rank = os.environ['RANK']
 print(f'global rank {rank}, local rank {local_rank}')
 device = torch.device(f'cuda:{int(local_rank)}')
 
-torch.distributed.init_process_group('nccl')
+torch.distributed.init_process_group('gloo')
+world_size = torch.distributed.get_world_size()
+nccl_group = torch.distributed.new_group(ranks=list(range(world_size)), backend="nccl")
 
 # warmup dist
 for i in range(10):
     tensor = torch.ones((1000, 2), device=device, dtype=torch.float) * int(rank)
-    dist.all_reduce(tensor, op=dist.ReduceOp.SUM)
+    dist.all_reduce(tensor, op=dist.ReduceOp.SUM, group=nccl_group)
+
+torch.cuda.synchronize()
 
 # test dist
 tensor = torch.ones((1000, 1000, 1000), device=device, dtype=torch.float) * int(rank)
+torch.cuda.synchronize()
+torch.distributed.barrier()
 now = time.time()
 N = 5
 for i in range(N):
-    dist.all_reduce(tensor, op=dist.ReduceOp.SUM)
-    dist.barrier()
+    dist.all_reduce(tensor, op=dist.ReduceOp.SUM, group=nccl_group)
+torch.cuda.synchronize()
+torch.distributed.barrier()
 elapsed = time.time() - now
 time_spent = elapsed / N
 speed = 4 / time_spent
